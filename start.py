@@ -1,6 +1,11 @@
+import bot
 print("Hello world!")
 from w1thermsensor import W1ThermSensor
 
 sensor = W1ThermSensor()
 temp = sensor.get_temperature()
 print(temp)
+
+bot.main()
+
+print("return")
