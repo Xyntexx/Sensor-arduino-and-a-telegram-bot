@@ -6,5 +6,12 @@ overlays=w1-gpio
 param_w1_pin=PA2
 param_w1_pin_int_pullup=0
 
+pip install w1thermsensor
+
 timezone:
 sudo dpkg-reconfigure tzdata
+
+
+Telegram bot:
+apt install libffi-dev
+$ pip install python-telegram-bot --upgrade
