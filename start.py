@@ -1,11 +1,12 @@
-import bot
-print("Hello world!")
-from w1thermsensor import W1ThermSensor
+lista=[0,1,2,3,4,5,6,7,8,9,10]
 
-sensor = W1ThermSensor()
-temp = sensor.get_temperature()
-print(temp)
+def funktio(lis):
+    while(lis):
+        print(lis.pop())
 
-bot.main()
+print(lista)
 
-print("return")
+funktio(lista)
+
+print(lista)
+        

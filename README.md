@@ -5,3 +5,6 @@ https://blog.ja-ke.tech/2019/01/21/DS18B20-armbian.html
 overlays=w1-gpio
 param_w1_pin=PA2
 param_w1_pin_int_pullup=0
+
+timezone:
+sudo dpkg-reconfigure tzdata

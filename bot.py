@@ -2,26 +2,19 @@
 # -*- coding: utf-8 -*-
 # This program is dedicated to the public domain under the CC0 license.
 
-"""
-Simple Bot to reply to Telegram messages.
-First, a few handler functions are defined. Then, those functions are passed to
-the Dispatcher and registered at their respective places.
-Then, the bot is started and runs until we press Ctrl-C on the command line.
-Usage:
-Basic Echobot example, repeats messages.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
-
-import logging
-
+import logging, time, sys
+from data import Data
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from w1thermsensor import W1ThermSensor
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+sensor = W1ThermSensor()
+extemp = Data("extemp", sensor.get_temperature)
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -30,6 +23,9 @@ def start(update, context):
     """Send a message when the command /start is issued."""
     update.message.reply_text('Hi!')
 
+def now(update, context):
+    update.message.reply_text("{:.1f} °C \n{:.1f} °C/min \n{:.1f} °C/h"
+    .format(extemp.now, extemp.delta_short(), extemp.delta_long()))
 
 def help(update, context):
     """Send a message when the command /help is issued."""
@@ -62,7 +58,8 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
-
+    dp.add_handler(CommandHandler("nyt", now))
+    dp.add_handler(CommandHandler("now", now))
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))
 
@@ -76,8 +73,18 @@ def main():
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
     #updater.idle()
-    print("running")
-
+    print("Bot running...")
+    try:
+        while(True):
+            extemp.update()
+            time.sleep(60)
+    except (KeyboardInterrupt, SystemExit):
+        print("Saving and quitting")
+        extemp.dumpall()
+        updater.stop()
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        raise
 
 if __name__ == '__main__':
     main()
