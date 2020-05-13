@@ -15,3 +15,8 @@ sudo dpkg-reconfigure tzdata
 Telegram bot:
 apt install libffi-dev
 $ pip install python-telegram-bot --upgrade
+
+To actually read the sensor two kernel modules are required, add to /etc/modules-load.d/modules.conf:
+
+w1-gpio
+w1-therm
